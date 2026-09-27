@@ -4,3 +4,6 @@ val_images/
 test_images/
 __pycache__/
 *.py[cod]
+efficientnet_b3_finetuned.pt
+ensemble_results/*.pt
+audit_test.py

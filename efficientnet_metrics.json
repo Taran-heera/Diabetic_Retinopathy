@@ -1,0 +1,22 @@
+{
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "records": 2930,
+  "training_records": 2343,
+  "validation_records": 587,
+  "model": "EfficientNet-B3 fine-tuned",
+  "metrics": {
+    "accuracy": 0.7563884156729132,
+    "balanced_accuracy": 0.5860902709374622,
+    "qwk": 0.8204594531788902,
+    "per_class_recall": [
+      0.9721254355400697,
+      0.5833333333333334,
+      0.6358024691358025,
+      0.4838709677419355,
+      0.2553191489361702
+    ],
+    "train_accuracy": 0.6666666666666666
+  },
+  "baseline_accuracy": 0.7768313458262351
+}

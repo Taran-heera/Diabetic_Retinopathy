@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quality-Aware Explainable AI for DR Screening</title>
+  <meta name="description" content="Clinical diabetic retinopathy screening system with quality awareness, explainability, and mobile-friendly capture." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">DR</div>
+        <div><strong>RetinaDesk</strong><span>Screening console</span></div>
+      </div>
+      <nav class="side-nav" aria-label="Primary navigation">
+        <a class="nav-item active" href="#screening"><span class="nav-icon">◉</span>New screening</a>
+        <a class="nav-item" href="#result"><span class="nav-icon">▣</span>Review queue</a>
+        <a class="nav-item" href="#quality"><span class="nav-icon">◇</span>Quality monitor</a>
+      </nav>
+      <div class="sidebar-footer"><span class="live-dot"></span><div><strong>Inference service</strong><small>Ready on this workstation</small></div></div>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div><p class="eyebrow">Clinical decision support</p><h1>Diabetic retinopathy screening</h1></div>
+        <div class="topbar-meta"><span class="status-pill"><span class="live-dot"></span>System ready</span><span class="operator">Screening station 01</span></div>
+      </header>
+
+      <div class="workflow-strip" id="screening">
+        <div class="workflow-step active"><b>01</b><span>Acquire image</span></div>
+        <div class="workflow-line"></div>
+        <div class="workflow-step"><b>02</b><span>Quality gate</span></div>
+        <div class="workflow-line"></div>
+        <div class="workflow-step"><b>03</b><span>Clinical review</span></div>
+      </div>
+
+      <section class="workspace-grid">
+        <article class="intake-panel panel">
+          <div class="panel-heading"><div><p class="section-kicker">Acquisition</p><h2>Start a screening</h2></div><span class="case-id">CASE <b id="case-id">NEW</b></span></div>
+          <div class="mode-toggle" aria-label="Capture mode selector">
+            <label class="mode-option"><input type="radio" name="capture_mode" value="fundus" checked><span><b>Fundus image</b><small>Upload retinal photograph</small></span></label>
+            <label class="mode-option"><input type="radio" name="capture_mode" value="selfie"><span><b>Close-eye selfie</b><small>Capture with camera</small></span></label>
+          </div>
+          <div class="mode-instruction" id="mode-instruction">Upload a clear retinal photograph to begin the quality gate.</div>
+          <div class="action-row">
+            <label id="upload-action" class="primary-button" for="image-input"><span>↑</span> Upload fundus image</label>
+            <button id="camera-btn" class="primary-button hidden" type="button"><span>◎</span> Open camera</button>
+            <input id="image-input" type="file" accept="image/*">
+          </div>
+          <div id="camera-stage" class="camera-stage hidden"><video id="camera-video" autoplay playsinline muted></video><canvas id="camera-canvas" class="hidden"></canvas><div class="camera-actions"><button id="capture-btn" class="primary-button" type="button">Capture frame</button><button id="stop-camera-btn" class="secondary-button" type="button">Close camera</button></div></div>
+          <div class="dropzone" id="dropzone"><div class="upload-icon">↑</div><p class="dropzone-title">Drop fundus image here</p><p class="dropzone-text">JPG, PNG, or WEBP · maximum 12 MB</p><div class="file-name" id="file-name">No image selected</div><img class="preview" id="preview" alt="Selected screening image"><button id="analyze" class="analyze-button" type="button" disabled>Analyze image</button><div class="error" id="error" role="alert"></div></div>
+          <div class="privacy-note"><span>▣</span> Images are processed locally on this screening station.</div>
+        </article>
+
+        <article class="result-panel panel" id="result">
+          <div class="panel-heading"><div><p class="section-kicker">Decision support</p><h2>Clinical review</h2></div><span id="priority-tag" class="priority-tag neutral">Awaiting image</span></div>
+          <div id="empty-state" class="empty-state"><div class="empty-graphic">◎</div><h3>Ready for image acquisition</h3><p>The quality gate will check image usability before presenting a screening estimate and evidence for review.</p></div>
+          <div id="result-body" class="result-body hidden">
+            <div class="summary-row"><div><p class="small-label">Screening estimate</p><h3 id="category">No DR likely</h3></div><div class="grade-box" id="grade-box">Level 0</div></div>
+            <div class="metric-grid"><div class="metric"><span>Model confidence</span><strong id="confidence">0%</strong><div class="meter"><span id="confidence-meter"></span></div></div><div class="metric" id="quality"><span>Image quality</span><strong id="quality-label">-</strong><div class="meter alternate"><span id="quality-meter"></span></div></div></div>
+            <div class="action-box" id="action-box">Routine screening follow-up</div>
+            <div class="explainability-area">
+              <div class="explainability-header"><div><p class="small-label">Explainability</p><h4>Why the system reached this result</h4></div><span class="evidence-badge">Evidence attached</span></div>
+              <div class="explain-tabs" role="tablist" aria-label="Result explanation views"><button class="explain-tab active" data-explain-tab="visual" type="button">Visual evidence</button><button class="explain-tab" data-explain-tab="reading" type="button">Plain-language reading</button><button class="explain-tab" data-explain-tab="distribution" type="button">Severity spread</button></div>
+              <div class="explain-view active" data-explain-view="visual"><div class="evidence-grid"><div class="heatmap-box"><div class="small-label">Attention map</div><img id="heatmap" alt="Explainability attention map"><p class="evidence-caption">Highlighted areas show where the model focused. They support review; they do not replace a clinician's examination.</p></div><div class="explanation-panel"><div class="small-label">What to look at</div><ul id="explanation-list"></ul></div></div></div>
+              <div class="explain-view" data-explain-view="reading"><div class="human-reading"><div class="reading-icon">i</div><div><strong id="human-summary">The system is waiting for an image.</strong><p id="human-detail">Upload or capture an image to receive a review summary in plain language.</p></div></div><div class="review-accordions"><details open><summary>What does the confidence mean?</summary><p id="confidence-copy">Confidence describes how strongly the model preferred its leading grade. It is not a guarantee.</p></details><details><summary>What does the image quality mean?</summary><p id="quality-copy">Quality reflects whether the image has enough brightness, contrast, and detail for a useful screening estimate.</p></details><details><summary>What should happen next?</summary><p id="next-step-copy">Use the action shown above as the next workflow step. A clinician should make the final decision.</p></details></div></div>
+              <div class="explain-view" data-explain-view="distribution"><div class="probability-panel"><div class="small-label">Five-grade severity distribution</div><div id="probabilities"></div><p class="evidence-caption">The model considers all five grades. The highest bar is the current estimate, while the remaining bars show competing possibilities.</p></div></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="operations-bar" id="quality"><div><span class="bar-label">Quality-aware workflow</span><strong>Every result carries an acquisition quality signal.</strong></div><div class="operations-stats"><span><b>5</b> severity grades</span><span><b>AI</b> visual evidence</span><span><b>LOCAL</b> processing</span></div></section>
+      <section class="integration-drawer" id="integration"><div><span class="bar-label">Model integration</span><strong>MATLAB explainability tools are available in this project.</strong><p>Simulink is not connected yet. The next integration point is a deployable model block for the same quality gate and review output.</p></div><span class="integration-status">Integration planned</span></section>
+      <footer class="app-footer"><span>RetinaDesk Screening Console · Decision support only</span><span>Model: ResNet18 · Five-grade classification</span></footer>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
