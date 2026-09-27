@@ -2,6 +2,21 @@
 
 This folder contains architecture-independent MATLAB explainability utilities for the APTOS 2019 diabetic retinopathy task.
 
+## Local screening application
+
+The repository includes the trained `drNet_resnet18.pt` checkpoint, Flask backend, and browser interface. After cloning:
+
+```text
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+```
+
+Open `http://127.0.0.1:5001` in a browser. The default port is `5001`; set the `PORT` environment variable to use another port. The application supports fundus image upload, close-eye camera capture, quality scoring, screening output, probability distribution, and explainability review panels.
+
+The application is a research prototype and decision-support tool, not a clinical diagnosis device. The included ResNet checkpoint is required for inference and is versioned with the repository.
+
 ## Dataset
 
 Download APTOS 2019 manually from Kaggle and place the files in this layout:
